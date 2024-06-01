@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Йога",
+        "time": "10:00",
+        "max": 15,
+        "current": 9,
+        "yourParticipation": false
+    },
+    {
+        "name": "Бокс",
+        "time": "11:00",
+        "max": 7,
+        "current": 2,
+        "yourParticipation": false
+    },
+    {
+        "name": "Аэробика",
+        "time": "12:00",
+        "max": 18,
+        "current": 15,
+        "yourParticipation": false
+    },
+    {
+        "name": "Плавание",
+        "time": "13:00",
+        "max": 6,
+        "current": 6,
+        "yourParticipation": false
+    }
+]
