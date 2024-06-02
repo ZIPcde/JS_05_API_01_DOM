@@ -1,76 +1,86 @@
-var schedule = []
+var schedule = [];
+
 function readJSONFromURL(url, callback) {
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(json => {
-        callback(null, json);
-      })
-      .catch(error => {
-        callback(error, null);
-      });
-  }
-  
-  readJSONFromURL('./schedule.json', (err, json) => {
-    if (err) {
-      console.error('Ошибка загрузки JSON:', err);
-      return;
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(json => {
+      callback(null, json);
+    })
+    .catch(error => {
+      callback(error, null);
+    });
+}
+
+function attachEventHandlers() {
+  const ul = document.createElement('ul');
+  schedule.forEach(function(event) {
+    const li = document.createElement('li');
+    li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + (event.yourParticipation === false ? ' (Вы не записаны)' : ' (Вы записаны)');
+
+    const button = document.createElement('button');
+    button.textContent = 'Участвовать в этом безобразии';
+
+    const buttonOut = document.createElement('button');
+    buttonOut.textContent = 'Отказаться от участия';
+
+    buttonOut.addEventListener('click', function() {
+      event.current--;
+      li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + ' (Вы не записаны)';
+      event.yourParticipation = false;
+      localStorage.setItem('schedule', JSON.stringify(schedule));
+      updateUI();
+    });
+
+    if (event.yourParticipation === true) {
+      li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + ' (Вы записаны)';
+      li.appendChild(buttonOut);
+      localStorage.setItem('schedule', JSON.stringify(schedule));
     }
-    console.log('Загруженный JSON:', json);
-    schedule = json;
+
+    if (event.current < event.max && event.yourParticipation === false) {
+      button.disabled = false;
+      button.addEventListener('click', function() {
+        event.current++;
+        li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + ' (Вы записаны)';
+        event.yourParticipation = true;
+        localStorage.setItem('schedule', JSON.stringify(schedule));
+        li.appendChild(buttonOut);
+        updateUI();
+      });
+    } else if (event.current >= event.max) {
+      button.disabled = true;
+      button.textContent = 'Запись на безобразие недоступна, группа не резиновая';
+    }
+
+    event.yourParticipation === true ? li.appendChild(buttonOut) : li.appendChild(button);
+    ul.appendChild(li);
   });
 
-  setTimeout(() => {
-      
-    const ul = document.createElement('ul');
+  const divHolder = document.querySelector('.sports_activities__schedule-holder');
+  divHolder.innerHTML = '';
+  divHolder.appendChild(ul);
+}
 
-    schedule.forEach(function(event) {
-      const li = document.createElement('li');
-      li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + ' (Вы не записаны)';
-    
-      const button = document.createElement('button');
-      button.textContent = 'Участвовать в этом безобразии';
+function updateUI() {
+  attachEventHandlers(); 
+}
 
-      const buttonOut = document.createElement('button');
-      buttonOut.textContent = 'Отказаться от участия';
-    
-      buttonOut.addEventListener('click', function() {
-          event.current--;
-          li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + ' (Вы не записаны)';
-          li.appendChild(button);
-        }
-      );
-      if (event.yourParticipation === true) {
-        li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + ' (Вы не записаны)';
-        event.yourParticipation === false;
-        li.appendChild(buttonOut);
-      }
-
-      if (event.current < event.max) {
-        button.disabled = false;
-        button.addEventListener('click', function() {
-          if (event.current < event.max || event.yourParticipation === false) {
-            event.current++;
-            li.textContent = event.name + ' в ' + event.time + ' (занято ' + event.current + ' из ' + event.max + ')' + ' (Вы записаны)';
-            event.yourParticipation === true;
-            li.appendChild(buttonOut);
-          }
-        });
-      } else {
-        button.disabled = true;
-        button.textContent = 'Запись на безобразие недоступна, группа не резиновая';
-      }
-    
-      li.appendChild(button);
-      ul.appendChild(li);
-    });
-    
-    const divHolder = document.querySelector('.sports_activities__schedule-holder');
-    divHolder.appendChild(ul);
-
-  }, 1000);
-
+readJSONFromURL('./schedule.json', (err, json) => {
+  if (err) {
+    console.error('Ошибка загрузки JSON:', err);
+    return;
+  }
+  console.log('Загруженный JSON:', json);
+  schedule = json;
+  if (localStorage.getItem('schedule')) {
+    schedule = JSON.parse(localStorage.getItem('schedule'));
+  } else {
+    localStorage.setItem('schedule', JSON.stringify(schedule));
+  }
+  attachEventHandlers(); 
+});
