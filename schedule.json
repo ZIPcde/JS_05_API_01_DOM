@@ -5,6 +5,7 @@
         "time": "10:00",
         "max": 15,
         "current": 9
+        
     },
     {
         "yourParticipation": false,
@@ -12,6 +13,7 @@
         "time": "11:00",
         "max": 7,
         "current": 2
+        
     },
     {
         "yourParticipation": false,
@@ -19,6 +21,7 @@
         "time": "12:00",
         "max": 18,
         "current": 15
+        
     },
     {
         "yourParticipation": false,
@@ -26,5 +29,6 @@
         "time": "13:00",
         "max": 6,
         "current": 6
+        
     }
 ]
