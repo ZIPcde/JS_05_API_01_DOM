@@ -24,6 +24,7 @@ function attachEventHandlers() {
 
     const button = document.createElement('button');
     button.textContent = 'Участвовать в этом безобразии';
+    button.classList.add('btn');
 
     const buttonOut = document.createElement('button');
     buttonOut.textContent = 'Отказаться от участия';
