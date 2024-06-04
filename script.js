@@ -25,9 +25,12 @@ function attachEventHandlers() {
     const button = document.createElement('button');
     button.textContent = 'Участвовать в этом безобразии';
     button.classList.add('btn');
+    button.classList.add('btn-outline-success');
 
     const buttonOut = document.createElement('button');
     buttonOut.textContent = 'Отказаться от участия';
+    buttonOut.classList.add('btn');
+    buttonOut.classList.add('btn-outline-danger');
 
     buttonOut.addEventListener('click', function() {
       event.current--;
@@ -56,6 +59,8 @@ function attachEventHandlers() {
     } else if (event.current >= event.max) {
       button.disabled = true;
       button.textContent = 'Запись на безобразие недоступна, группа не резиновая';
+      button.classList.add('btn');
+      button.classList.add('btn-outline-warning');
     }
 
     event.yourParticipation === true ? li.appendChild(buttonOut) : li.appendChild(button);
